@@ -1,5 +1,5 @@
 import javax.swing.*;
-import java.awt.Font;
+import java.awt.Font; // Unused until now.
 import java.awt.event.*;
 
 public class Register extends JFrame{
