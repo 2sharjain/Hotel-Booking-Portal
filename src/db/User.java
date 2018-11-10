@@ -36,9 +36,7 @@ public class User{
             catch(SQLException e){
                 e.printStackTrace();
             }
-
         }
-
     }
 
     static Connection connectToDatabase(){
@@ -48,7 +46,7 @@ public class User{
 
         String USER = "root"; // MySQl server username
         String PASS = "root"; // MySQl server password
-        String DB_URL = "jdbc:mysql://localhost/user";
+        String DB_URL = "jdbc:mysql://localhost/user";  // database = user
         Statement createUserDB = null;
         Connection conn = null;
         try{
@@ -63,13 +61,13 @@ public class User{
 
         }
         catch(SQLException se){
-            se.printStackTrace();
+            se.printStackTrace();   
         }
         catch(Exception e){
             e.printStackTrace();
         }
         finally{
-            //finally block used to return connection object
+            //finally returns connection object
             try{
                 if(createUserDB!=null)
                 createUserDB.close();
@@ -90,10 +88,9 @@ public class User{
                 return null;
             }
         }
-        
     }
 
-    public Booking[] getBooking(){
+    public Booking[] getBookings(){
         // returns array of all Bookings
         // code
         return null;
@@ -118,16 +115,44 @@ public class User{
     }
 
     public static User login(String username, String password){
-        // logs in the user and returns a new User object.
-        // code
+        // This basically authenticates if the username and password is correct
+        // and returns User object if correct
+        try{
+            Connection conn = connectToDatabase();
+            Statement getUser = conn.createStatement();
+            ResultSet r = getUser.executeQuery("SELECT * FROM user WHERE password=" + "'"  + password + "'" + " AND username=" + "'" + "'" );
+            while(r.next()){
+                if(r.getString("username") != null){
+                    return new User(username);
+                }
+                else{
+                    return null;
+                }
+            }
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+            return null;
+        }
         return null;
     }
 
     public static void registerUser(String username, String password,
-                               String address, String email, String dob,
-                               String name)
+                                    String address, String email, String dob,
+                                    String name)
     {
-        // Creates a new User in user object.
-        // code
+        /*
+         * Should have valid Arguments. Validate beforehand!
+         */
+        try{
+            Connection conn = connectToDatabase();
+            Statement addUser = conn.createStatement();
+            String statement = "INSERT INTO user(username, password, name, email, address, dob)";
+            String values = "VALUES('" + username + "','" + password + "','" + name + "','" + email + "','" + address + "','" + dob + "')";
+            addUser.execute(statement+values);
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+        }
     }
 }
