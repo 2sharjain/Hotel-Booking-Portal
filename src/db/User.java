@@ -1,5 +1,3 @@
-package db;
-
 import java.sql.*;
 import java.util.*;
 
@@ -17,23 +15,42 @@ public class User{
     String address;
     String email;
     String dob;
-    private Connection conn;
 
     public User(String username){
+        // Constructor
+        // Gets Data by querying the databse with username
         this.username = username;
-        // gets other info by making a query to database
-        // code 
+        Connection conn  = connectToDatabase();
+
+        if (conn!=null){
+            try{
+                Statement getData = conn.createStatement();
+                ResultSet r = getData.executeQuery("SELECT * FROM USER WHERE username='" + username+"'");
+                while(r.next()){
+                    this.name = r.getString("name");
+                    this.address = r.getString("address");
+                    this.email = r.getString("email");
+                    this.dob = r.getString("dob");
+                }
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
-    private Connection connectToDatabase(){
+    static Connection connectToDatabase(){
         /*
          * CLOSE THE CONNECTION OBJECT RETURNED FROM THIS METHOD AFTER USE.
          */
 
-        private String USER = "root"; // MySQl server username
-        private String PASS = "root"; // MySQl server password
-        private String DB_URL = "jdbc:mysql://localhost/";
-        private Statement createUserDB = null;
+        String USER = "root"; // MySQl server username
+        String PASS = "root"; // MySQl server password
+        String DB_URL = "jdbc:mysql://localhost/user";
+        Statement createUserDB = null;
+        Connection conn = null;
         try{
             // JDBC Driver
             // Needs help
@@ -42,19 +59,8 @@ public class User{
             // Open a connection
             System.out.println("Connecting to User");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("Connected");
 
-            // This try block catches exception if database already exists
-            try{
-                // Creating a Database. Will be populated when users register.
-                String createDB = "CREATE DATABASE USER";
-                createUserDB = conn.createStatement();
-                createUserDB.execute(createDB);
-                System.out.println("Created Database Successfully");
-            }
-            catch(Exception se){
-                // Handles Error
-                se.printStackTrace();
-            }
         }
         catch(SQLException se){
             se.printStackTrace();
@@ -72,27 +78,34 @@ public class User{
                 // pass
             }
             try{
-                if(conn!=null)
-                return conn;
+                if(conn!=null){
+                    return conn;
+                }
+                else{
+                    return null;
+                }
             }
-            catch(SQLException se){
-                se.printStackTrace();
+            catch(Exception e){
+                e.printStackTrace();
                 return null;
             }
         }
+        
     }
 
     public Booking[] getBooking(){
         // returns array of all Bookings
         // code
+        return null;
     }
 
     public Booking getBooking(String ref){
         // returns booking by the reference ID
         // code
+        return null;
     }
 
-    public Static void createBooking(){
+    public static void createBooking(){
         // TODO: add arguments
 
         // creates new booking for the user in the database and returns the Booking object for it
@@ -107,9 +120,10 @@ public class User{
     public static User login(String username, String password){
         // logs in the user and returns a new User object.
         // code
+        return null;
     }
 
-    public static registerUser(String username, String password,
+    public static void registerUser(String username, String password,
                                String address, String email, String dob,
                                String name)
     {
