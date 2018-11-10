@@ -1,5 +1,11 @@
 import javax.swing.*;
 import java.awt.event.*;
+import db.*;
+
+// include class path while compiling i.e add the command :
+//    ```
+//        javac -cp {{Path to db folder}}; db/lib/mysql-connector-java-8.0.13.jar Login.java
+//    ```
 
 public class Login extends JFrame{
 

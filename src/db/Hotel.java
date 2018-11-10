@@ -1,4 +1,4 @@
-
+package db;
 public class Hotel{
 
     // Hotel manager class to access a Hotel's info
@@ -31,7 +31,7 @@ public class Hotel{
     public Boolean available(String checkin, String checkout){
         // returns true if available else returns false
         // code
-        return false;
+        return null;
     }
 
 }

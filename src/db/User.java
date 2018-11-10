@@ -1,3 +1,4 @@
+package db;
 import java.sql.*;
 import java.util.*;
 
@@ -110,8 +111,7 @@ public class User{
     }
 
     public void logout(){
-        // logs the user out.
-        // code
+        
     }
 
     public static User login(String username, String password){
@@ -132,27 +132,29 @@ public class User{
         }
         catch(SQLException se){
             se.printStackTrace();
-            return null;
         }
+
         return null;
     }
 
     public static void registerUser(String username, String password,
                                     String address, String email, String dob,
                                     String name)
-    {
-        /*
+    {   /*
          * Should have valid Arguments. Validate beforehand!
          */
+
         try{
             Connection conn = connectToDatabase();
             Statement addUser = conn.createStatement();
+            // SQL STATEMENT
             String statement = "INSERT INTO user(username, password, name, email, address, dob)";
             String values = "VALUES('" + username + "','" + password + "','" + name + "','" + email + "','" + address + "','" + dob + "')";
             addUser.execute(statement+values);
         }
+
         catch(SQLException se){
-            se.printStackTrace();
+            System.out.println(se.toString());
         }
     }
 }
