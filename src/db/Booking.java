@@ -1,5 +1,4 @@
 package db;
-
 import java.util.*; // for date
 import java.text.*; // for parsing string to date
 
@@ -20,7 +19,7 @@ public class Booking {
         // gets other info by making a query to database
     }
 
-    public void modify(String ...){
+    public void modify(String ... args){
         // code
         // modifies the booking if possible and saves changes to database
     }
@@ -32,6 +31,7 @@ public class Booking {
 
     public Hotel getHotel(){
         // returns the Hotel for this Booking
+        return null;
     }
 
 }

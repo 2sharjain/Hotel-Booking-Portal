@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import java.awt.Font; // Unused until now.
 import java.awt.event.*;

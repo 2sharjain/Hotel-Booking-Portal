@@ -1,5 +1,4 @@
 package db;
-
 public class Hotel{
 
     // Hotel manager class to access a Hotel's info
@@ -20,16 +19,19 @@ public class Hotel{
     public static Hotel[] getHotel(String location){
         // gets all hotels for the location
         // code
+        return null;
     }
 
     public Booking getBoooking(){
         // returns all of the bookings for the Hotel
         // code
+        return null;
     }
 
     public Boolean available(String checkin, String checkout){
         // returns true if available else returns false
         // code
+        return null;
     }
 
 }

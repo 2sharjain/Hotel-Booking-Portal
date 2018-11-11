@@ -17,23 +17,40 @@ public class User{
     String address;
     String email;
     String dob;
-    private Connection conn;
 
     public User(String username){
+        // Constructor
+        // Gets Data by querying the databse with username
         this.username = username;
-        // gets other info by making a query to database
-        // code 
+        Connection conn  = connectToDatabase();
+
+        if (conn!=null){
+            try{
+                Statement getData = conn.createStatement();
+                ResultSet r = getData.executeQuery("SELECT * FROM USER WHERE username='" + username+"'");
+                while(r.next()){
+                    this.name = r.getString("name");
+                    this.address = r.getString("address");
+                    this.email = r.getString("email");
+                    this.dob = r.getString("dob");
+                }
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 
-    private Connection connectToDatabase(){
+    static Connection connectToDatabase(){
         /*
          * CLOSE THE CONNECTION OBJECT RETURNED FROM THIS METHOD AFTER USE.
          */
 
-        private String USER = "root"; // MySQl server username
-        private String PASS = "root"; // MySQl server password
-        private String DB_URL = "jdbc:mysql://localhost/";
-        private Statement createUserDB = null;
+        String USER = "root"; // MySQl server username
+        String PASS = "root"; // MySQl server password
+        String DB_URL = "jdbc:mysql://localhost/user";  // database = user
+        Statement createUserDB = null;
+        Connection conn = null;
         try{
             // JDBC Driver
             // Needs help
@@ -42,28 +59,17 @@ public class User{
             // Open a connection
             System.out.println("Connecting to User");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("Connected");
 
-            // This try block catches exception if database already exists
-            try{
-                // Creating a Database. Will be populated when users register.
-                String createDB = "CREATE DATABASE USER";
-                createUserDB = conn.createStatement();
-                createUserDB.execute(createDB);
-                System.out.println("Created Database Successfully");
-            }
-            catch(Exception se){
-                // Handles Error
-                se.printStackTrace();
-            }
         }
         catch(SQLException se){
-            se.printStackTrace();
+            se.printStackTrace();   
         }
         catch(Exception e){
             e.printStackTrace();
         }
         finally{
-            //finally block used to return connection object
+            //finally returns connection object
             try{
                 if(createUserDB!=null)
                 createUserDB.close();
@@ -72,27 +78,33 @@ public class User{
                 // pass
             }
             try{
-                if(conn!=null)
-                return conn;
+                if(conn!=null){
+                    return conn;
+                }
+                else{
+                    return null;
+                }
             }
-            catch(SQLException se){
-                se.printStackTrace();
+            catch(Exception e){
+                e.printStackTrace();
                 return null;
             }
         }
     }
 
-    public Booking[] getBooking(){
+    public Booking[] getBookings(){
         // returns array of all Bookings
         // code
+        return null;
     }
 
     public Booking getBooking(String ref){
         // returns booking by the reference ID
         // code
+        return null;
     }
 
-    public Static void createBooking(){
+    public static void createBooking(){
         // TODO: add arguments
 
         // creates new booking for the user in the database and returns the Booking object for it
@@ -100,20 +112,50 @@ public class User{
     }
 
     public void logout(){
-        // logs the user out.
-        // code
+        
     }
 
     public static User login(String username, String password){
-        // logs in the user and returns a new User object.
-        // code
+        // This basically authenticates if the username and password is correct
+        // and returns User object if correct
+        try{
+            Connection conn = connectToDatabase();
+            Statement getUser = conn.createStatement();
+            ResultSet r = getUser.executeQuery("SELECT * FROM user WHERE password=" + "'"  + password + "'" + " AND username=" + "'" + "'" );
+            while(r.next()){
+                if(r.getString("username") != null){
+                    return new User(username);
+                }
+                else{
+                    return null;
+                }
+            }
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+        }
+
+        return null;
     }
 
-    public static registerUser(String username, String password,
-                               String address, String email, String dob,
-                               String name)
-    {
-        // Creates a new User in user object.
-        // code
+    public static void registerUser(String username, String password,
+                                    String address, String email, String dob,
+                                    String name)
+    {   /*
+         * Should have valid Arguments. Validate beforehand!
+         */
+
+        try{
+            Connection conn = connectToDatabase();
+            Statement addUser = conn.createStatement();
+            // SQL STATEMENT
+            String statement = "INSERT INTO user(username, password, name, email, address, dob)";
+            String values = "VALUES('" + username + "','" + password + "','" + name + "','" + email + "','" + address + "','" + dob + "')";
+            addUser.execute(statement+values);
+        }
+
+        catch(SQLException se){
+            System.out.println(se.toString());
+        }
     }
 }
