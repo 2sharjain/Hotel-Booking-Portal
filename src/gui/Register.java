@@ -131,7 +131,6 @@ public class Register extends JFrame{
                         return;
                     }
                     
-
                     // Username Validator
                     try{
                         Connection conn = User.connectToDatabase();
@@ -150,6 +149,7 @@ public class Register extends JFrame{
 
                 User.registerUser(u, p1, ad, em, d, na);
                 System.out.println("User Registered SuccessFully");
+                userRegistered();
                 return;
                 }
             }
@@ -160,8 +160,11 @@ public class Register extends JFrame{
 
     private void errorHandler(String errorMessage){
         System.out.println(errorMessage);
-        JOptionPane.showMessageDialog(this, errorMessage);
+        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.WARNING_MESSAGE);
     }
 
+    private void userRegistered(){
+        JOptionPane.showMessageDialog(this, "User Registered Successfully");
+    }
 
 }
