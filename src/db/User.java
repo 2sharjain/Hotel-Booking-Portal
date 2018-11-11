@@ -3,20 +3,16 @@ package db;
 import java.sql.*;
 import java.util.*;
 
-// Run command  - "java -cp .;lib/mysql-connector-java-8.0.13.jar {{CLASS NAME}}" to run with databse
-// NEED HELP WITH THIS ^
-// There are other ways
-
 public class User{
 
     // User Manager class to access a User's information.
     // username is used to search for a user in the database.
 
-    String username;
-    String name;
-    String address;
-    String email;
-    String dob;
+    public String username;
+    public String name;
+    public String address;
+    public String email;
+    public String dob;
 
     public User(String username){
         // Constructor
@@ -41,7 +37,7 @@ public class User{
         }
     }
 
-    static Connection connectToDatabase(){
+    public static Connection connectToDatabase(){
         /*
          * CLOSE THE CONNECTION OBJECT RETURNED FROM THIS METHOD AFTER USE.
          */

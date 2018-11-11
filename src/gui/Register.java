@@ -4,6 +4,17 @@ import javax.swing.*;
 import java.awt.Font; // Unused until now.
 import java.awt.event.*;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+import java.util.*;
+import java.text.*;
+
+import db.*;
+
+
 public class Register extends JFrame{
 
     public Register(){
@@ -87,9 +98,59 @@ public class Register extends JFrame{
                 // Will be called when button pressed
                 // Processes the entered info
                 public void actionPerformed(ActionEvent e){
-                    // TODO:
-                        // ADD VALIDATORS FOR ALL FIELDS
-                        // Add methods for registering a new user (requires backend)
+                    
+                    // Checks if entered info is correct and registers a new user
+
+                    String u = username.getText().trim();
+                    String em = email.getText().trim();
+                    String ad = address.getText().trim();
+                    String na = name.getText().trim();
+                    String d = dob.getText().trim();
+                    System.out.println(u);
+
+                    String p1 = new String(password1.getPassword()); // converting to string as they are parsed as char[]
+                    String p2 = new String(password2.getPassword());
+                    
+                    // If any field is left blank
+                    if(u.length() == 0 || em.length() == 0 || ad.length() == 0 || na.length() == 0 || d.length() == 0 || p1.length() == 0 || p2.length() == 0){
+                        System.out.println("Uh Oh");
+                        errorHandler("Please Fill All the Fields");
+                        return;
+                    }
+
+                    // Password Validator
+                    if(p1.compareTo(p2) != 0){
+                        errorHandler("Passwords Don't match");
+                        return;
+                    }
+
+                    // Date Validator
+                    String[] db = d.split("/");
+                    if(db.length != 3){
+                        errorHandler("Enter correct date");
+                        return;
+                    }
+                    
+
+                    // Username Validator
+                    try{
+                        Connection conn = User.connectToDatabase();
+                        Statement check = conn.createStatement();
+                        ResultSet r = check.executeQuery(String.format("SELECT * from user WHERE username='%s'",u));
+                        if(r.next()){
+                            errorHandler("Username already exists");
+                            System.out.println("User Already exists");
+                            return;
+                        }
+                    }
+                    catch(SQLException se){
+                        errorHandler("Something wrong happened");
+                        return;
+                    }
+
+                User.registerUser(u, p1, ad, em, d, na);
+                System.out.println("User Registered SuccessFully");
+                return;
                 }
             }
         );
@@ -97,8 +158,10 @@ public class Register extends JFrame{
         add(register);
     }
 
-    private void errorHandler(String field){
-        // Handler when a field has invalid info or left empty
+    private void errorHandler(String errorMessage){
+        System.out.println(errorMessage);
+        JOptionPane.showMessageDialog(this, errorMessage);
     }
+
 
 }
