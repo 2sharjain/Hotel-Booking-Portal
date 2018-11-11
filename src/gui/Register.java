@@ -156,8 +156,28 @@ public class Register extends JFrame{
         );
         register.setBounds(200, 350, 100, 25);
         add(register);
-    }
 
+        // Link to login page
+        JLabel login = new JLabel("Already Have an account? Login here:");
+        login.setBounds(90, 400, 220, 25);
+        add(login);
+        JButton loginLink = new JButton("Login");
+        loginLink.setBounds(320, 400, 100, 25);
+        loginLink.addActionListener(
+            new ActionListener(){
+                public void actionPerformed(ActionEvent ae){
+
+                    Login window = new Login();
+                    window.setVisible(true);
+                    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                    dispose(); // closes current window
+                }
+            }
+        );
+        add(loginLink);
+    }
+    
     private void errorHandler(String errorMessage){
         System.out.println(errorMessage);
         JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.WARNING_MESSAGE);
