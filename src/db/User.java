@@ -13,7 +13,7 @@ public class User{
     public String address;
     public String email;
     public String dob;
-
+    
     public User(String username){
         // Constructor
         // Gets Data by querying the databse with username
@@ -40,12 +40,13 @@ public class User{
     public static Connection connectToDatabase(){
         /*
          * CLOSE THE CONNECTION OBJECT RETURNED FROM THIS METHOD AFTER USE.
+         * NAME OF THE DATABASE IS USER. DON'T CONFUSE IT WITH THE TABLE NAME.
+         * NAME OF THE TABLE FOR USERS IS ALSO 'user'
          */
 
         String USER = "root"; // MySQl server username
         String PASS = "root"; // MySQl server password
         String DB_URL = "jdbc:mysql://localhost/user";  // database = user
-        Statement createUserDB = null;
         Connection conn = null;
         try{
             // JDBC Driver
@@ -53,7 +54,7 @@ public class User{
             Class.forName("com.mysql.jdbc.Driver");
 
             // Open a connection
-            System.out.println("Connecting to User");
+            System.out.println("Connecting to Database // User");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             System.out.println("Connected");
 
@@ -67,19 +68,7 @@ public class User{
         finally{
             //finally returns connection object
             try{
-                if(createUserDB!=null)
-                createUserDB.close();
-            }
-            catch(SQLException se2){
-                // pass
-            }
-            try{
-                if(conn!=null){
-                    return conn;
-                }
-                else{
-                    return null;
-                }
+                return conn;
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -94,17 +83,11 @@ public class User{
         return null;
     }
 
+    
     public Booking getBooking(String ref){
         // returns booking by the reference ID
         // code
         return null;
-    }
-
-    public static void createBooking(){
-        // TODO: add arguments
-
-        // creates new booking for the user in the database and returns the Booking object for it
-        // code
     }
 
     public void logout(){
@@ -117,7 +100,7 @@ public class User{
         try{
             Connection conn = connectToDatabase();
             Statement getUser = conn.createStatement();
-            ResultSet r = getUser.executeQuery("SELECT * FROM user WHERE password=" + "'"  + password + "'" + " AND username=" + "'" + "'" );
+            ResultSet r = getUser.executeQuery("SELECT * FROM user WHERE password=" + "'"  + password + "'" + " AND username=" + "'" + username + "'" );
             while(r.next()){
                 if(r.getString("username") != null){
                     return new User(username);
