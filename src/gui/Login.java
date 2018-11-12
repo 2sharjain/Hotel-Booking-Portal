@@ -47,8 +47,19 @@ public class Login extends JFrame{
             new ActionListener(){
                 // Will be called when button pressed
                 public void actionPerformed(ActionEvent e){
-                    // TODO:
-                        // Requires Backend for logging in
+
+                    String p = new String(password.getPassword());
+                    String u = username.getText();
+                    User us = User.login(u, p); // returns null if username or passsword wrong
+                    System.out.println(String.format("Entered password = %s username = %s",p, u));
+                    if (us!= null){
+                        // Do something
+                        System.out.println("Logged in");
+                    }
+                    else{
+                        errorHandler("Wrong username or password");
+                    }
+
                 }
             }
         );
@@ -64,15 +75,22 @@ public class Login extends JFrame{
             new ActionListener(){
                 // Will be called when button pressed
                 public void actionPerformed(ActionEvent e){
-                    // TODO:
-                        // This will open the Registration window.
+                    // Register Window
+                    Register window = new Register();
+                    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    window.setVisible(true);
+
+                    dispose();
                 }
             }
         );
         register.setBounds(320, 355, 90, 20);
         add(register);
+    }
 
-
+    private void errorHandler(String errorMessage){
+        System.out.println(errorMessage);
+        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.WARNING_MESSAGE);
     }
 
 }
