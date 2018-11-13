@@ -9,6 +9,7 @@ public class Hotel{
     int rating;        // Average of all ratings by users
     String[] reviews;  // All reviews to the hotel
     int id;
+    int price;
 
     public Hotel(int hotel_id){
         this.id = hotel_id;
