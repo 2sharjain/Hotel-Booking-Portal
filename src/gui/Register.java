@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-import java.util.*;
+import java.util.Date;
 import java.text.*;
 
 import db.*;
@@ -100,7 +100,7 @@ public class Register extends JFrame{
                 public void actionPerformed(ActionEvent e){
                     
                     // Checks if entered info is correct and registers a new user
-
+                    
                     String u = username.getText().trim();
                     String em = email.getText().trim();
                     String ad = address.getText().trim();
@@ -125,9 +125,14 @@ public class Register extends JFrame{
                     }
 
                     // Date Validator
-                    String[] db = d.split("/");
-                    if(db.length != 3){
-                        errorHandler("Enter correct date");
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+                    try{
+                        Date n = f.parse(d);
+                    }
+                    catch(Exception de){
+                        
+                        System.out.println("date wrong");
+                        errorHandler("Enter correct DOB in format");
                         return;
                     }
                     
@@ -177,7 +182,7 @@ public class Register extends JFrame{
         );
         add(loginLink);
     }
-    
+
     private void errorHandler(String errorMessage){
         System.out.println(errorMessage);
         JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.WARNING_MESSAGE);

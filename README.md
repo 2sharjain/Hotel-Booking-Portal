@@ -9,6 +9,10 @@ rooms of their choice.
 To compile the App run the following command:
 
 ```bash
+   cd src
+```
+
+```bash
    javac -cp .;db/lib/mysql-connector-java-8.0.13.jar; App.java
 ```
 

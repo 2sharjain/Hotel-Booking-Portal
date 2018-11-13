@@ -55,6 +55,8 @@ public class Login extends JFrame{
                     if (us!= null){
                         // Do something
                         System.out.println("Logged in");
+                        JOptionPane.showMessageDialog(null, "LOGGED IN");
+
                     }
                     else{
                         errorHandler("Wrong username or password");

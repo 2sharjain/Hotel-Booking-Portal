@@ -134,7 +134,18 @@ public class Booking{
     }
 
     public Hotel getHotel(){
-        return null;
+        try{
+            Connection conn = connectToDataBase();
+            Statement getHotel = String.format("SELECT * FROM booking WHERE ref='%s'", this.refId);
+            while(r.next()){
+                return new Hotel(r.getInt("hotelid"));
+            }
+            return null;
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+            return null;
+        }
     }
 
 }
