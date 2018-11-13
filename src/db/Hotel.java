@@ -38,6 +38,30 @@ public class Hotel{
         }
     }
 
+    public Hotel(String name){
+        this.name = name;
+
+        try{
+            Connection conn = connectToDatabase();
+            Statement getHotel = conn.createStatement();
+            ResultSet r = getHotel.executeQuery(String.format("SELECT * FROM hotel WHERE name='%s'", this.name));
+
+            while(r.next()){
+                name = r.getString("name");
+                location = r.getString("location");
+                price = r.getInt("price");
+                rooms = r.getInt("rooms");
+                features = r.getString("features");
+
+            }
+            conn.close();
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+        }
+    }
+
+
     public static Connection connectToDatabase(){
         /*
          * CLOSE THE CONNECTION OBJECT RETURNED FROM THIS METHOD AFTER USE.
@@ -78,15 +102,16 @@ public class Hotel{
     }
 
     public static Hotel[] getHotels(String location){
+        Hotel[] results = new Hotel[20];
         try{
             Connection conn = connectToDatabase();
             Statement s = conn.createStatement();
             ResultSet r = s.executeQuery(String.format("SELECT * FROM hotel WHERE location='%s'",location));
-
-            Hotel[] results = new Hotel[20];
+            System.out.println(location);
             int i = 0;
 
             while(r.next()){
+                System.out.println(r.getString("name"));
                 results[i] = new Hotel(r.getInt("hotelid"));
                 i++;
             }
@@ -95,6 +120,7 @@ public class Hotel{
 
         }
         catch(SQLException se){
+            System.out.println("SQL ");
             se.printStackTrace();
         }
         return null;
@@ -123,7 +149,7 @@ public class Hotel{
 
     }
 
-    public Boolean available(String checkin, String checkout){
+    public int available(String checkin, String checkout){
         Date cin, cout;
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
         try{
@@ -132,10 +158,9 @@ public class Hotel{
         }
         catch(Exception e){
             e.printStackTrace();
-            return false;
+            return 0;
         }
         
-
         int roomsAvailable = this.rooms; int  i = 0;
         Booking[] allBookings = new Booking[15];
 
@@ -150,7 +175,7 @@ public class Hotel{
             }
             
             if(roomsAvailable > i){
-                return true;
+                return roomsAvailable;
             }
 
             for(int j = 0; j<i; j++){
@@ -169,11 +194,11 @@ public class Hotel{
                 }
 
             }
-            return roomsAvailable <= 0 ? false:true;
+            return roomsAvailable;
         }
         catch(SQLException se){
             se.printStackTrace();
-            return false;
+            return 0;
         }
     }
 }

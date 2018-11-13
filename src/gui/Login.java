@@ -55,7 +55,11 @@ public class Login extends JFrame{
                     if (us!= null){
                         // Do something
                         System.out.println("Logged in");
-                        JOptionPane.showMessageDialog(null, "LOGGED IN");
+                        Home window = new Home(us);
+                        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        window.setVisible(true);
+
+                        dispose();
 
                     }
                     else{

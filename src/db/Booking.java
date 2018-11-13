@@ -135,8 +135,9 @@ public class Booking{
 
     public Hotel getHotel(){
         try{
-            Connection conn = connectToDataBase();
-            Statement getHotel = String.format("SELECT * FROM booking WHERE ref='%s'", this.refId);
+            Connection conn = connectToDatabase();
+            Statement getHotel = conn.createStatement();
+            ResultSet r = getHotel.executeQuery(String.format("SELECT * FROM booking WHERE ref='%s'", this.refID));
             while(r.next()){
                 return new Hotel(r.getInt("hotelid"));
             }
