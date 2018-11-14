@@ -13,22 +13,46 @@ public MyBooking(User user){
 	super("My Bookings");
 	this.loggedInUser = user;
 	setLayout(null);
-	setSize(450,370);
+	setSize(550,385);
 	createWidget();
 	}
 public void createWidget(){
 	JLabel confirmed = new JLabel("*BOOKINGS*");
-	confirmed.setBounds(170,30,100,25);
+	confirmed.setBounds(220,30,100,25);
 	add(confirmed);
-
 	
+	Booking[] allBookings = this.loggedInUser.getBookings();
+	int len = 0;
+    for(Booking b:allBookings){
+        try{
+            String lol = b.refID;
+            len++;
+        }
+        catch(Exception e){
+            break;
+        }
+    }
 
-	JLabel hotelName = new JLabel("HOTEL NAME");
-	hotelName.setBounds(20,75,150,20);
+	String[] nameArray = new String[len];
+	String[] roomsArray = new String[len];
+	String[] fromArray = new String[len];
+	String[] toArray = new String[len];
+	String[] priceArray = new String[len];
+
+	for(int i = 0; i <len; i++){
+		nameArray[i] = allBookings[i].refID ;
+		roomsArray[i] = "(" + allBookings[i].noOfRooms+") "+allBookings[i].getHotel().name;
+		fromArray[i] = allBookings[i].checkIn;
+		toArray[i] = allBookings[i].checkOut;
+		priceArray[i] = "" + allBookings[i].totalCost*allBookings[i].noOfRooms +"(" + allBookings[i].status + ")";
+	}
+
+	JLabel hotelName = new JLabel("REF ID");
+	hotelName.setBounds(20,75,100,20);
 	add(hotelName);
 
 	JLabel rooms = new JLabel("Rooms");
-	rooms.setBounds(170,75,60,20);
+	rooms.setBounds(120,75,60,20);
 	add(rooms);
 	JLabel from = new JLabel("FROM");
 	from.setBounds(230,75,60,20);
@@ -40,29 +64,31 @@ public void createWidget(){
 	price.setBounds(370,75,60,20);
 	add(price);
 	
-	JList hotelNameList = new JList(x);
+	JList hotelNameList = new JList(nameArray);
 	hotelNameList.setVisibleRowCount(5);
 	hotelNameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	hotelNameList.setFixedCellWidth(150);
+	hotelNameList.setFixedCellWidth(100);
 	hotelNameList.setFixedCellHeight(40);
+
 	JPanel hotelNamePanel = new JPanel();
-	hotelNamePanel.setBounds(20,95,150,200);
+	hotelNamePanel.setBounds(20,95,100,200);
 	hotelNamePanel.add(new JScrollPane(hotelNameList));
 	add(hotelNamePanel);
 
-	JList hotelRoomsList = new JList(x);
+	JList hotelRoomsList = new JList(roomsArray);
 	hotelRoomsList.setVisibleRowCount(5);
-	hotelRoomsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	hotelRoomsList.setFixedCellWidth(60);
+	hotelRoomsList.setSelectionModel(new NoSelectionModel());
+	hotelRoomsList.setFixedCellWidth(110);
 	hotelRoomsList.setFixedCellHeight(40);
 	JPanel hotelRoomsPanel = new JPanel();
-	hotelRoomsPanel.setBounds(170,95,60,200);
+	hotelRoomsPanel.setBounds(120,95,110,200);
 	hotelRoomsPanel.add(new JScrollPane(hotelRoomsList));
 	add(hotelRoomsPanel);
 	
-	JList hotelFromList = new JList(x);
+
+	JList hotelFromList = new JList(fromArray);
 	hotelFromList.setVisibleRowCount(5);
-	hotelFromList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	hotelFromList.setSelectionModel(new NoSelectionModel());
 	hotelFromList.setFixedCellWidth(70);
 	hotelFromList.setFixedCellHeight(40);
 	JPanel hotelFromPanel = new JPanel();
@@ -70,9 +96,9 @@ public void createWidget(){
 	hotelFromPanel.add(new JScrollPane(hotelFromList));
 	add(hotelFromPanel);
 	
-	JList hotelToList = new JList(x);
+	JList hotelToList = new JList(toArray);
 	hotelToList.setVisibleRowCount(5);
-	hotelToList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	hotelToList.setSelectionModel(new NoSelectionModel());
 	hotelToList.setFixedCellWidth(70);
 	hotelToList.setFixedCellHeight(40);
 	JPanel hotelToPanel = new JPanel();
@@ -80,23 +106,27 @@ public void createWidget(){
 	hotelToPanel.add(new JScrollPane(hotelToList));
 	add(hotelToPanel);
 	
-	JList hotelPriceList = new JList(x);
+	JList hotelPriceList = new JList(priceArray);
 	hotelPriceList.setVisibleRowCount(5);
-	hotelPriceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	hotelPriceList.setFixedCellWidth(60);
+	hotelPriceList.setSelectionModel(new NoSelectionModel());
+	hotelPriceList.setFixedCellWidth(150);
 	hotelPriceList.setFixedCellHeight(40);
 	JPanel hotelPricePanel = new JPanel();
-	hotelPricePanel.setBounds(370,95,60,200);
+	hotelPricePanel.setBounds(370,95,150,200);
 	hotelPricePanel.add(new JScrollPane(hotelPriceList));
 	add(hotelPricePanel);
 	
 	JButton logout = new JButton("LOGOUT");
-	logout.setBounds(340,20,90,35);
+	logout.setBounds(430,20,90,35);
 	add(logout);
 	logout.addActionListener(new ActionListener(){
-	public void actionPerformed(ActionEvent event){
+		public void actionPerformed(ActionEvent event){
+			Login window = new Login();
+            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            window.setVisible(true);
 
-	}
+            dispose();
+		}
 	});
 
 	JButton home = new JButton("HOME");
@@ -104,7 +134,7 @@ public void createWidget(){
 	add(home);
 	home.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent event){
-		searchResult ff = new searchResult();
+		Home ff = new Home(loggedInUser);
 		ff.setSize(630,200);
 		ff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ff.setVisible(true);
@@ -113,10 +143,53 @@ public void createWidget(){
 	});
 
 	JButton modify = new JButton("MODIFY");
-	modify.setBounds(345,300,90,30);
+	modify.setBounds(430,300,90,30);
 	add(modify);
-	JButton delete = new JButton("DELETE");
-	delete.setBounds(235,300,90,30);
+	modify.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			String ref = hotelNameList.getSelectedValue().toString();
+			Modify window = new Modify(new Booking(ref));
+			// window.setDefaultCloseOperation();
+			window.setVisible(true);
+		}
+	});
+	JButton delete = new JButton("CANCEL");
+	delete.setBounds(320,300,90,30);
 	add(delete);
+	delete.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			Booking b = new Booking(hotelNameList.getSelectedValue().toString());
+			b.delete();
+			JOptionPane.showMessageDialog(null, "CANCELLED SUCCESSFULLY");
+
+		}
+	});
+
 }
+
+private static class NoSelectionModel extends DefaultListSelectionModel{
+	// This is a selection mode which makes the list item unselectable
+
+	@Override
+	public void setAnchorSelectionIndex(final int anchorIndex){
+		// Left Blank
+	}
+
+	@Override
+	public void setLeadAnchorNotificationEnabled(final boolean flag){
+		// Left Blank
+	}
+
+	@Override
+	public void setLeadSelectionIndex(final int leadIndex){
+		// Left Blank
+	}
+
+	@Override
+	public void setSelectionInterval(final int index0, final int index1){
+		// Left Blank
+	}
+
+}
+
 }

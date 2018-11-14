@@ -42,21 +42,21 @@ public class Home extends JFrame{
         JLabel from = new JLabel("Check-in:");
         from.setBounds(115,80,70,25);
         add(from);
-        JTextField fromDate = new JTextField("1234/56/78");
+        JTextField fromDate = new JTextField("2018/10/10");
         fromDate.setBounds(195,80,80,25);
         add(fromDate);
 
         JLabel to = new JLabel("Check-out:");
         to.setBounds(315,80,70,25);
         add(to);
-        JTextField toDate = new JTextField("1234/56/78");
+        JTextField toDate = new JTextField("2018/10/20");
         toDate.setBounds(395,80,80,25);
         add(toDate);
 
         JLabel location = new JLabel("Location");
         location.setBounds(115,120,50,25);
         add(location);
-        JTextField locationf = new JTextField();
+        JTextField locationf = new JTextField("goa");
         locationf.setBounds(195,120,80,25);
         add(locationf);
 
@@ -82,7 +82,11 @@ public class Home extends JFrame{
 
         logout.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
+                Login window = new Login();
+                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                window.setVisible(true);
 
+                dispose();
             }
         });
         
@@ -91,11 +95,11 @@ public class Home extends JFrame{
         add(myBookings);
         myBookings.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
+                MyBooking window = new MyBooking(loggedInUser);
+                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                window.setVisible(true);
+                
                 dispose();
-                // myBookings myBookingsObject = new myBookings();
-                // myBookingsObject.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                // myBookingsObject.setSize(450,370);
-                // myBookingsObject.setVisible(true);
             }
         });
 
@@ -145,7 +149,7 @@ public class Home extends JFrame{
                 if (evt.getClickCount() == 2) {
                     // Gets Name of hotel
                     String hotelName = hotelNameToOpen.getSelectedValue().toString();
-                    HotelDetail window = new HotelDetail(new Hotel("star villa"), Integer.parseInt(no_of_Roomsf.getText()), fromDate.getText(), toDate.getText(), loggedInUser);
+                    HotelDetail window = new HotelDetail(new Hotel(hotelName), Integer.parseInt(no_of_Roomsf.getText()), fromDate.getText(), toDate.getText(), loggedInUser);
                     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     window.setVisible(true);
 
@@ -164,6 +168,10 @@ public class Home extends JFrame{
                 SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
                 Date d1	= f.parse(fromDate.getText());
                 Date d2	= f.parse(toDate.getText());
+                if(d2.compareTo(d1)<=0){
+                    JOptionPane.showMessageDialog(null,"ENTER CORRECT DATES Pls we worked very hard for this to work","ERROR",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 }
                 catch(Exception e){
                     e.printStackTrace();

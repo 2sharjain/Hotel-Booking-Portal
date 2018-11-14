@@ -27,7 +27,7 @@ public class HotelDetail extends JFrame{
 
     public void createWidgets(){
         // String[] reviews = this.hotel.getReviews();
-        String[] x = {"Wonderful Hotel", "Best service", "cum stains on the mattress"}; 
+        String[] x = this.hotel.getReviews(); 
         JLabel hotelName = new JLabel(this.hotel.name);
         hotelName.setBounds(250,30,150,25);
         add(hotelName);
@@ -58,7 +58,7 @@ public class HotelDetail extends JFrame{
         reviewList.setFixedCellWidth(400);
         reviewList.setFixedCellHeight(40);
         JPanel reviewPanel = new JPanel();
-        reviewPanel.setBounds(100,190,400,200);
+        reviewPanel.setBounds(100,190,420,200);
         reviewPanel.add(new JScrollPane(reviewList));
         add(reviewPanel);
 
@@ -74,21 +74,31 @@ public class HotelDetail extends JFrame{
             }
         });
         add(logout);
-        
-        if(this.hotel.available(this.checkIn, this.checkOut) > this.roomsRequired){
+        System.out.println(this.hotel.available(this.checkIn, this.checkOut));
+        if(this.hotel.available(this.checkIn, this.checkOut) >= this.roomsRequired){
             JButton book = new JButton("BOOK");
             book.setBounds(250,145,120,30);
             book.addActionListener(new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    Booking.createBooking();
+                    ConfirmBooking window = new ConfirmBooking(hotel, roomsRequired, checkIn, checkOut, loggedInUser);
+                    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    window.setVisible(true);
+
+                    dispose();
                 }
-            })
+            });
             add(book);
         }
         else{
             JButton wait = new JButton("Add to waiting list");
             wait.setBounds(250,145,170,30);
             add(wait);
+            wait.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    Booking.addToWaiting(checkIn, checkOut, loggedInUser.username,hotel.id,hotel.price, 5, roomsRequired);
+                    JOptionPane.showMessageDialog(null,"Added to waiting list","CONGRATULATIONS",JOptionPane.PLAIN_MESSAGE);
+                }
+            });
         }
 
 

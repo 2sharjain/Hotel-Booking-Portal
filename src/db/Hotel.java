@@ -52,6 +52,7 @@ public class Hotel{
                 price = r.getInt("price");
                 rooms = r.getInt("rooms");
                 features = r.getString("features");
+                id = r.getInt("hotelid");
 
             }
             conn.close();
@@ -96,8 +97,8 @@ public class Hotel{
             }
             catch(Exception e){
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
     }
 
@@ -127,7 +128,7 @@ public class Hotel{
     }
 
     public Booking[] getBoookings(){
-        Booking[] results = new Booking[3];
+        Booking[] results = new Booking[10];
         int i = 0;
 
         try{
@@ -149,6 +150,24 @@ public class Hotel{
 
     }
 
+    public String[] getReviews(){
+        String[] results = new String[10];
+        int i =0;
+        try{
+            Connection conn = connectToDatabase();
+        Statement s = conn.createStatement();
+        ResultSet r = s.executeQuery(String.format("SELECT * FROM review WHERE hotelid='%d'", this.id));
+        while(r.next()){
+            results[i] = r.getString("review");
+            i++;
+        }
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+        }
+        return results;
+    }
+
     public int available(String checkin, String checkout){
         Date cin, cout;
         SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
@@ -163,20 +182,21 @@ public class Hotel{
         
         int roomsAvailable = this.rooms; int  i = 0;
         Booking[] allBookings = new Booking[15];
+        allBookings = getBoookings();
+        for(Booking ho:allBookings){
+            try{
+                String lol = ho.refID;
+                i++;
+            }
+            catch(Exception e){
+                break;
+            }
+        }
 
         try{
             Connection conn = connectToDatabase();
             Statement s = conn.createStatement();
             ResultSet r = s.executeQuery(String.format("SELECT * FROM booking where hotelid='%d'", this.id));
-
-            while(r.next()){
-                allBookings[i] = new Booking(r.getString("ref"));
-                i++;
-            }
-            
-            if(roomsAvailable > i){
-                return roomsAvailable;
-            }
 
             for(int j = 0; j<i; j++){
                 Date bcin = new Date(), bcout = new Date(); // Initialize
@@ -189,8 +209,9 @@ public class Hotel{
                     e.printStackTrace();
                 }
 
-                if(!(cin.compareTo(bcout) > 0 || cout.compareTo(bcin) < 0)){
+                if(((cin.compareTo(bcin)<0 && cout.compareTo(bcout)>0)||(cin.compareTo(bcin)>=0 && cout.compareTo(bcout)<=0)|| (cin.compareTo(bcin)<0 && cout.compareTo(bcin)>0 && cout.compareTo(bcout)<=0) || (cin.compareTo(bcin)>0 && cin.compareTo(bcout)<0 && cout.compareTo(bcout)>0))&&(allBookings[j].status.compareTo("confirmed") == 0)){
                     roomsAvailable = roomsAvailable - allBookings[j].noOfRooms;
+                    System.out.print("sfbhvbvkbv");
                 }
 
             }

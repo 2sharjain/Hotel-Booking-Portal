@@ -18,6 +18,7 @@ public class Booking{
     public int totalCost;
     public int noOfRooms;
     public int noOfPeople;
+    public String status;
 
     public Booking(String refID){
         this.refID = refID;
@@ -36,6 +37,7 @@ public class Booking{
                     noOfRooms = r.getInt("rooms");
                     noOfPeople = r.getInt("people");
                     username = r.getString("username");
+                    status = r.getString("status");
 
                 }
             conn.close();
@@ -105,17 +107,33 @@ public class Booking{
 
     }
 
-    public void modify(String checkin, String checkout){
+    public void modify(String checkin, String checkout, int rooms, int price){
         try{
             Connection conn = connectToDatabase();
-            String modify = String.format("UPDATE booking SET checkin='%s', checkout='%s' WHERE ref='%s'", checkin, checkout, this.refID);
+            String modify = String.format("UPDATE booking SET checkin='%s', checkout='%s', rooms='%d', cost='%d' WHERE ref='%s'", checkin, checkout,rooms, price, this.refID);
             Statement s = conn.createStatement();
             s.execute(modify);
-            conn.close();
             
             // Update for this object as well
             this.checkIn = checkin;
             this.checkOut = checkout;
+            int i =0;
+            Booking[] all = new Booking[10];
+            Statement w = conn.createStatement();
+            String getWait = String.format("SELECT * FROM booking where status='waiting'");
+            ResultSet rs = w.executeQuery(getWait);
+            while(rs.next()){
+                all[i] = new Booking(rs.getString("ref"));
+                i++;
+            }
+
+            for(int j =0; j<i; j++){
+                if(all[j].getHotel().available(all[j].checkIn, all[j].checkOut) >= all[j].noOfRooms){
+                    String modify1 = String.format("UPDATE booking SET status='confirmed' WHERE ref='%s'", all[j].refID);
+                    Statement s1 = conn.createStatement();
+                    s1.execute(modify1);
+                }
+            }
         }
         catch(SQLException se){
             se.printStackTrace();
@@ -129,8 +147,50 @@ public class Booking{
     }
 
     public void delete(){
-        // code
-        // deletes a booking from the database
+        try{
+            Connection conn = connectToDatabase();
+            Statement s = conn.createStatement();
+            s.execute(String.format("DELETE FROM booking WHERE (ref = '%s')", this.refID));
+                int i =0;
+                Booking[] all = new Booking[10];
+                Statement w = conn.createStatement();
+                String getWait = "SELECT * FROM booking where status='waiting'";
+                ResultSet rs = w.executeQuery(getWait);
+                while(rs.next()){
+                    all[i] = new Booking(rs.getString("ref"));
+                    i++;
+                }
+    
+                for(int j =0; j<i; j++){
+                    if(all[j].getHotel().available(all[j].checkIn, all[j].checkOut) >= all[j].noOfRooms){
+                        String modify1 = String.format("UPDATE booking SET status='confirmed' WHERE ref='%s'", all[j].refID);
+                        Statement s1 = conn.createStatement();
+                        s1.execute(modify1);
+                    }
+                }
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+            return;
+        }
+    }
+
+    public static void addToWaiting(String cin, String cout, String username, int hotel, int cost, int people, int rooms){
+        Random rndm = new Random();
+        String ref = String.format("%d", Math.abs(rndm.nextInt()));
+        try{
+            Connection addBooking = connectToDatabase();
+            String stmt = String.format("INSERT INTO BOOKING(ref, checkin, checkout, hotelid, username, cost, people, rooms, status)VALUES('%s', '%s', '%s', %d, '%s', %d, %d, %d, '%s')", ref, cin, cout, hotel, username, cost, people, rooms, "waiting");
+            Statement s = addBooking.createStatement();
+            s.execute(stmt);
+            addBooking.close();
+            System.out.println("YAY CCREATED BOOKING");
+            return;
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+            return;
+        }
     }
 
     public Hotel getHotel(){
@@ -138,7 +198,9 @@ public class Booking{
             Connection conn = connectToDatabase();
             Statement getHotel = conn.createStatement();
             ResultSet r = getHotel.executeQuery(String.format("SELECT * FROM booking WHERE ref='%s'", this.refID));
+            
             while(r.next()){
+                System.out.println(r.getString("username"));
                 return new Hotel(r.getInt("hotelid"));
             }
             return null;

@@ -78,20 +78,22 @@ public class User{
     }
 
     public Booking[] getBookings(){
-        // returns array of all Bookings
-        // code
-        return null;
-    }
-
-    
-    public Booking getBooking(String ref){
-        // returns booking by the reference ID
-        // code
-        return null;
-    }
-
-    public void logout(){
-        
+        Booking[] results = new Booking[10];
+        int i = 0;
+        try{
+            Connection conn =  Booking.connectToDatabase();
+            Statement getBookings = conn.createStatement();
+            ResultSet r =getBookings.executeQuery(String.format("SELECT * FROM booking WHERE username='%s'", this.username));
+            while(r.next()){
+                results[i] = new Booking(r.getString("ref"));
+                System.out.println(results[i]);
+                i++;
+            }
+        }
+        catch(SQLException se){
+            se.printStackTrace();
+        }
+        return results;
     }
 
     public static User login(String username, String password){
