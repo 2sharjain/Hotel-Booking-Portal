@@ -55,6 +55,12 @@ public class Login extends JFrame{
                     if (us!= null){
                         // Do something
                         System.out.println("Logged in");
+                        Home window = new Home(us);
+                        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        window.setVisible(true);
+
+                        dispose();
+
                     }
                     else{
                         errorHandler("Wrong username or password");
